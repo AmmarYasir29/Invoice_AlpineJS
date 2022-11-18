@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Invoice</title>
+  <link
+    href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+    rel="stylesheet">
+</head>
+
+<body>
+  <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 divide-x">
+      <div>
+        <textarea id="invoice_from" rows="3" class="block px-2 w-64 text-sm rounded-lg border"
+          placeholder="Who is this invoice from? (required)"></textarea>
+        <div class="grid grid-cols-2 divide-x">
+          <div>
+            <label class="block px-4 mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bill To</label>
+            <textarea id="bill_to" rows="3" class="px-2 w-64 text-sm rounded-lg border"
+              placeholder="Who is this invoice to? (required)"></textarea>
+          </div>
+          <div>
+            <label class="block px-4 mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ship To</label>
+            <textarea id="ship_to" rows="3" class="px-2 w-64 text-sm rounded-lg border"
+              placeholder="(optional)"></textarea>
+          </div>
+        </div>
+      </div>
+      <div>
+        <input type="text" id="invoice_num"
+          class="w-32 caret-black text-3xl bg-white text-black  h-16 w-52  p-2.5 outline-1 outline-slate-400	"
+          value="# 1" required>
+        <div class="relative">
+          <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+              viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <input datepicker datepicker-autohide type="text"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Date">
+        </div>
+        <label for="payment_terms" class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
+        <input type="text" id="payment_terms"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  h-12 w-52 block w-full  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Payment Terms">
+        <div class="relative">
+          <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+              viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <input datepicker datepicker-autohide type="text"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Due Date">
+        </div>
+        <label for="Po number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
+        <input type="text" id="ship_to"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  h-12 w-52 block w-full  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="PO Number">
+      </div>
+    </div>
+  </div>
+
+  <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8" x-data="datatables()">
+    <table class="min-w-full text-center">
+      <thead class="border-b bg-gray-800">
+        <tr>
+          <th scope="col" class="text-sm font-medium text-white px-2 py-2">
+            #
+          </th>
+          <th scope="col" class="text-sm font-medium text-white px-8 py-2">
+            Item
+          </th>
+          <th scope="col" class="text-sm font-medium text-white px-4 py-2">
+            Quantity
+          </th>
+          <th scope="col" class="text-sm font-medium text-white px-4 py-2">
+            Rate
+          </th>
+          <th scope="col" class="text-sm font-medium text-white px-4 py-2">
+            Amount
+          </th>
+          <th scope="col" class="text-sm font-medium text-white px-4 py-2">
+          </th>
+        </tr>
+      </thead class="border-b">
+      <tbody>
+        <template x-for="(row, index) in rows" :key="index">
+          <tr bg-white border-b>
+            <td class="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900 index">
+              <span class="text-gray-700 px-6 py-3 flex items-center" x-text="index + 1"></span>
+            </td>
+            <td class="text-sm text-gray-900 font-light px-8 py-2 whitespace-nowrap firstName">
+              <input x-model="row.item"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="item" type="text" placeholder="Item">
+            </td>
+            <td class="text-sm text-gray-900 font-light px-4 py-2 whitespace-nowrap lastName">
+              <input x-model="row.quantity"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="quantity" type="number" placeholder="Quantity">
+            </td>
+            <td class="text-sm text-gray-900 font-light px-4 py-2 whitespace-nowrap emailAddress">
+              <input x-model="row.rate"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="rate" type="number" placeholder="Rate">
+            </td>
+            <td class="text-sm text-gray-900 font-light px-4 py-2 whitespace-nowrap gender">
+              <span class="text-gray-700 px-6 py-3 flex items-center"
+                x-text="(row.quantity && row.rate)? row.quantity * row.rate : 0" x-model="row.price"></span>
+            </td>
+            <td class="text-sm text-gray-900 font-light px-2 py-2 whitespace-nowrap phoneNumber">
+              <span class="text-gray-700 px-6 py-3 flex items-center"><a @click="removeRow(index)" href="#"
+                  class="text-red-600 hover:text-red-100 ml-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </a> </span>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+    <button class="bg-green-500 hover:bg-green-700 text-white py-1 px-2 rounded" type="button" @click="addNewRow()">+
+      Line Item</button>
+    <div>
+    </div>
+    <div class="grid grid-cols-2 divide-x">
+      <div>
+        <label class="block px-4 py-2 mb-1 text-sm font-medium text-gray-900 dark:text-gray-300">Notes </label>
+        <textarea id="notes" rows="3" class="w-96 px-2 text-sm rounded-lg border"
+          placeholder="Notes - any relevant information not already covered"></textarea>
+
+        <label class="block px-2 py-2 mb-1 text-sm font-medium text-gray-900 dark:text-gray-300">Terms </label>
+        <textarea id="notes" rows="3" class="w-96 px-2 text-sm rounded-lg border"
+          placeholder="Terms and conditions - late fees, payment methods, delivery schedule"></textarea>
+      </div>
+      <div>
+        <label class="px-4 py-2 mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Subtotal </label>
+        <span x-text="rows.reduce((i,item)=>i + (item.rate* item.quantity), 0) + ' $'" type="text"
+          class="form-control"></span>
+        <div class="block mb-4"></div>
+        <label class="px-4 py-2 mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Discount</label>
+        <input x-model="dsicont" type="number" id="dsicont"
+          class="form-control px-3 text-base border border-solid border-gray-300 rounded focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none "
+          placeholder="Discount">
+        <div class="block mb-4"></div>
+        <label class="px-4 py-2mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Shipping</label>
+        <input x-model="shipping" type="number" id="shipping"
+          class="form-control px-3 text-base border border-solid border-gray-300 rounded focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+          placeholder="Shipping">
+        <div class="block mb-4"></div>
+        <label class="px-4 py-2 mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Total</label>
+        <span x-text="rows.reduce((i, item) => i + (item.rate * item.quantity), 0) -dsicont + +shipping + ' $'"
+          type="text" class="form-control w-32 px-6"></span>
+        <div class="block mb-4"></div>
+        <label class="px-1 py-2 mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Amount Paid</label>
+        <input x-model="amountPaid" type="number" id="amountPaid"
+          class="form-control px-3 text-base border border-solid border-gray-300 rounded focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+          placeholder="Shipping">
+        <div class="block mb-4"></div>
+        <label class="px-4 py-2 mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"> Balance</label>
+        <span
+          x-text="rows.reduce((i, item) => i + (item.rate * item.quantity), 0)-dsicont + +shipping -amountPaid+ ' $'"
+          type="text" class="form-control w-32 px-2"></span>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  function datatables() {
+    return {
+      total: 0,
+      dsicont: 0,
+      shipping: 0,
+      amountPaid: 0,
+      rows: [{
+        "item": '',
+        "quantity": 1,
+        "rate": 0,
+      }],
+      removeRow(key) {
+        this.rows.splice(key, 1);
+      },
+      addNewRow() {
+        this.rows.push({
+          "item": '',
+          "quantity": 1,
+          "rate": 0,
+        });
+        this.total = parseInt(this.rows.price) + this.total;
+      },
+    }
+  }
+</script>
+
+</html>
